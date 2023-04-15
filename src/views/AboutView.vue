@@ -1,7 +1,40 @@
 <template>
-    <div class="about">
-        <h1>About page</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4" v-for="(flight, index) in flights" :key="index">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Lot nr {{ flight.number }}</h5>
+                        <p class="card-text">Lotnisko wylotu: {{ flight.departureAirport }}</p>
+                        <p class="card-text">Lotnisko przylotu: {{ flight.arrivalAirport }}</p>
+                        <p class="card-text">Długość lotu: {{ flight.flightLength }}</p>
+                        <p class="card-text">Godzina wylotu: {{ flight.departureTime }}</p>
+                        <p class="card-text">Godzina przylotu: {{ flight.arrivalTime }}</p>
+                        <p class="card-text">Cena: {{ flight.price }} zł</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
-<script setup>
+<script>
+import { db } from '../firebase/index.js';
+import { collection, getDocs } from "firebase/firestore";
+
+export default {
+    data() {
+        return {
+            flights: [],
+        };
+    },
+    async mounted() {
+        try {
+            const flightsRef = collection(db, 'testmdoe');
+            const snapshot = await getDocs(flightsRef);
+            this.flights = snapshot.docs.map(doc => doc.data());
+        } catch (error) {
+            console.error(`Error fetching flights: ${error}`);
+        }
+    },
+};
 </script>
