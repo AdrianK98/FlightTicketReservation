@@ -4,7 +4,9 @@ import { auth } from '@/firebase'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth'
 
 export default createStore({
@@ -79,6 +81,18 @@ export default createStore({
       commit('CLEAR_USER')
 
       await router.push('/login')
+    },
+
+    async loginWithGoogle({commit}) {
+      const provider = new GoogleAuthProvider()
+      try {
+        const result = await signInWithPopup(auth, provider)
+        const user = result.user
+        commit('SET_USER', user)
+        await router.push('/')
+      } catch (error) {
+        alert("Something went wrong")
+      }
     },
 
     fetchUser ({ commit }) {
