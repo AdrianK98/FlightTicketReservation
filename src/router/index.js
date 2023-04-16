@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/HomeView.vue'
 import Login from '../views/LoginView.vue'
 import AddFlight from '../views/AddFlightView.vue'
+import Flight from '../views/FlightView.vue'
 import { auth } from '@/firebase'
 
 const routes = [
@@ -34,6 +35,15 @@ const routes = [
       requiresAuth: true
     }
   },
+  {
+    path: '/flights/:flightId',
+    name: 'Flight',
+    component: Flight,
+    props: true,
+    meta: {
+      requiresAuth: true
+    }
+  }
 ]
 
 const router = createRouter({
