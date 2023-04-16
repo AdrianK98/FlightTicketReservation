@@ -2,6 +2,7 @@
     <div id="nav" v-if="$store.state.user">
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link> |
+        <router-link to="/add_flight">Add Flight</router-link> |
         <button type="button" class="btn btn-info" @click="$store.dispatch('logout')">Logout</button>
     </div>
     <router-view/>
