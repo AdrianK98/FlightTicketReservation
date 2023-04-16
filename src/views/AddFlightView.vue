@@ -94,9 +94,9 @@ export default {
           try {
 
             //add values into firebase from inputs
-              const docRef = await addDoc(collection(db, "testmdoe"),this.flight);
-              console.log("Document written with ID: ", docRef.id);
 
+              const docRef = await addDoc(collection(db, "testmdoe"),{});
+              await setDoc(doc(db, 'testmdoe', docRef.id), this.flight);
               this.flight = {
                   number: '',
                   departureAirport: '',
@@ -106,6 +106,8 @@ export default {
                   arrivalTime: '',
                   price: '',
               };
+              await setDoc(doc(db, 'testmdoe', docRef.id), {id:docRef.id},{ merge: true });
+              console.log("Document written with ID: ", docRef.id);
 
               //create 200 free seats in firebase
               for (let i = 1; i <= 200; i++) {
