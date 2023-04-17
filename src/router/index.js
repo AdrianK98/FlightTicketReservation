@@ -36,6 +36,11 @@ const routes = [
     }
   },
   {
+    path: '/auth/google',
+    name: 'GoogleAuth',
+    component: () => import('../views/GoogleAuthView.vue')
+  },
+  {
     path: '/flights/:flightId',
     name: 'Flight',
     component: Flight,
@@ -58,7 +63,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.matched.some(record => record.meta.requiresAuth) && !auth.currentUser) {
-    next('/login')
+    next('/')
     return;
   }
 
