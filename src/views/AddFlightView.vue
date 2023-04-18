@@ -113,7 +113,7 @@ export default {
                 seats: {}
               }
               for (let i = 1; i <= 200; i++) {
-                seatData.seats[i] = {reserved:false};
+                seatData.seats[i] = {reserved:false, userId: null};
               }
 
               

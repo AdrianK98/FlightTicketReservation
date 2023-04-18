@@ -6,10 +6,11 @@
       </div>
       <div class="row justify-content-center">
           <div class="col-md-5">
+            <h2>First Row</h2>
               <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
                   <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(0, 3)" :key="seat.id">
                       <div class="card" :class="{ 'bg-secondary': seat.reserved }">
-                          <div class="card-body">
+                          <div class="card-body" :disabled="!seat.available" @click="reserveSeat(seat.id)">
                               {{ seat.id }}
                           </div>
                       </div>
@@ -18,6 +19,7 @@
           </div>
           <div class="col-md-2"></div>
           <div class="col-md-5">
+            <h2>Second Row</h2>
               <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
                   <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(3, 6)" :key="seat.id">
                       <div class="card" :class="{ 'bg-secondary': seat.reserved }">
@@ -35,8 +37,9 @@
 </template>
 
 <script>
+import { getAuth } from "firebase/auth";
 import { db } from '@/firebase';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 export default {
   props:{
       flightId:{
@@ -46,22 +49,40 @@ export default {
   data() {
       return {
           seats: {},
+          flightRef:'',
       };
   },
   async mounted() {
+
       const flightId = this.$router.currentRoute._value.params.flightId
-      const docRef = doc(db, "flights", flightId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-          this.seats = docSnap.data().seats;
+      this.flightRef = doc(db, "flights", flightId);
+      const flightSnap = await getDoc(this.flightRef);
+      if (flightSnap.exists()) {
+          this.seats = flightSnap.data().seats;
       } else {
           console.log("Failed to load");
       }
   },
   methods: {
-      reserveSeat(id) {
+      async reserveSeat(id) {
+          const auth = getAuth();
+          const user = auth.currentUser;
+          
+          if (!user) {
+            return 
+          } 
+          const uid = user.uid;
+
+
+          //ADD FIREBASE SEATS STATUS CHANGE AND ADD USERID
+          const seatReservationChangeStatus = 'seats.'+ id +'.reserved';
+          const seatReservationChangeUid = 'seats.'+ id +'.userId';
           this.seats[id].reserved = true;
-          //ADD FIREBASE SEATS UPDATE
+          await updateDoc(this.flightRef, {
+            [seatReservationChangeStatus] : true,
+            [seatReservationChangeUid]:uid,
+        },{ merge: true });
+
       }
   },
   computed: {
