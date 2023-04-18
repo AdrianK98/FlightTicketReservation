@@ -8,10 +8,10 @@
         <router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h2>SEATS</h2></router-link>
 
         <h1>{{flight.number}} </h1>
-        <h1 data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Departure : {{flight.departureAirport}} </h1>
+        <h1 data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse">Departure : {{flight.departureAirport}} </h1>
         <h1 >Arrival: {{flight.arrivalAirport}} </h1>
 
-        <div class="collapse" id="collapseExample">
+        <div class="collapse" id="departureMapCollapse">
             <div class="card card-body">
                 <div id="map"></div>
             </div>
