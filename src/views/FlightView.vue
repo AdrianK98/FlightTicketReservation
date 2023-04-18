@@ -1,6 +1,7 @@
 <template>
-    <div v-for="(data, index) in flight" :key="index">
-        <h1>{{ data}}</h1>
+    <router-link :to="{ name: 'Seats' }"><H1>SEATS</H1></router-link>
+    <div v-for="(data, index) in flight.seats" :key="index">
+        <h1>{{ index }}:{{ data}} </h1>
     </div>
   </template>
   

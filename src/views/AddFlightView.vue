@@ -106,13 +106,25 @@ export default {
                   arrivalTime: '',
                   price: '',
               };
-              await setDoc(doc(db, 'testmdoe', docRef.id), {id:docRef.id},{ merge: true });
+
+              const seatData = {
+                id : docRef.id,
+                seats: {}
+              }
+              for (let i = 1; i <= 200; i++) {
+                seatData.seats[i] = {reserved:false};
+              }
+
+              
+              await setDoc(doc(db, 'testmdoe', docRef.id), seatData,{ merge: true });
               console.log("Document written with ID: ", docRef.id);
 
+
+
               //create 200 free seats in firebase
-              for (let i = 1; i <= 200; i++) {
-                let seatID = i.toString()
-                await setDoc(doc(db, 'testmdoe', docRef.id,'seats',seatID), {reserved:false});}
+              // for (let i = 1; i <= 200; i++) {
+              //   let seatID = i.toString()
+              //   await setDoc(doc(db, 'testmdoe', docRef.id,'seats',seatID), {reserved:false});}
 
 
 
