@@ -1,14 +1,23 @@
 <template>
+<div class="container-md">
+  <!-- Content here -->
+
     
-    
-        <h1>{{flight.number}} </h1>
-        <h1>From : {{flight.arrivalAirport}} </h1>
-        <h1>To: {{flight.departureAirport}} </h1>
+
 
         <router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h2>SEATS</h2></router-link>
 
-        <div id="map"></div>
-    
+        <h1>{{flight.number}} </h1>
+        <h1 data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Departure : {{flight.departureAirport}} </h1>
+        <h1 >Arrival: {{flight.arrivalAirport}} </h1>
+
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <div id="map"></div>
+            </div>
+        </div>
+        
+</div>
 </template>
   
 <script>
@@ -81,7 +90,7 @@ import { doc, getDoc } from "firebase/firestore";
             ],
             view: new View({
                 center: fromLonLat([this.departureLocationLong,this.departureLocationLat ]),
-                zoom: 10,
+                zoom: 15,
             }),
             });
 
@@ -103,6 +112,6 @@ import { doc, getDoc } from "firebase/firestore";
   </script>
   <style scoped>
   #map {
-    height: 400px;
+    height: 450px;
   }
   </style>
