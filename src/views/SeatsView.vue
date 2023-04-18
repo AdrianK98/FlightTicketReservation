@@ -48,6 +48,7 @@ import { doc, getDoc } from "firebase/firestore";
     },
     async mounted() {
 
+        //READ FLIGHT DATA FROM FIREBASE
         const flightId = this.$router.currentRoute._value.params.flightId
         const docRef = doc(db, "flights", flightId);
         const docSnap = await getDoc(docRef);
@@ -65,10 +66,16 @@ import { doc, getDoc } from "firebase/firestore";
     reserveSeat(id) {
       this.seats[id].reserved = true;
       //ADD FIREBASE SEATS UPDATE
+
+
+
+
     }
   },
   computed: {
   rows() {
+
+    //CREATE ROWS WITH FREE MIDDLE SPACE
     const rows = {};
     for (const seat in this.seats) {
       const seatNum = parseInt(seat);
