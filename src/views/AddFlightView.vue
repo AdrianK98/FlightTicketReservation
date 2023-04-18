@@ -1,6 +1,7 @@
 <template>
   <div class="container ">
     
+    
       <h1>Dodaj lot</h1>
       <form @submit.prevent="addFlight">
             <div class="row justify-content-md-center">
@@ -95,8 +96,8 @@ export default {
 
             //add values into firebase from inputs
 
-              const docRef = await addDoc(collection(db, "testmdoe"),{});
-              await setDoc(doc(db, 'testmdoe', docRef.id), this.flight);
+              const docRef = await addDoc(collection(db, "flights"),{});
+              await setDoc(doc(db, 'flights', docRef.id), this.flight);
               this.flight = {
                   number: '',
                   departureAirport: '',
@@ -116,15 +117,8 @@ export default {
               }
 
               
-              await setDoc(doc(db, 'testmdoe', docRef.id), seatData,{ merge: true });
+              await setDoc(doc(db, 'flights', docRef.id), seatData,{ merge: true });
               console.log("Document written with ID: ", docRef.id);
-
-
-
-              //create 200 free seats in firebase
-              // for (let i = 1; i <= 200; i++) {
-              //   let seatID = i.toString()
-              //   await setDoc(doc(db, 'testmdoe', docRef.id,'seats',seatID), {reserved:false});}
 
 
 

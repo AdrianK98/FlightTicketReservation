@@ -1,8 +1,12 @@
 <template>
-    <router-link :to="{ name: 'Seats' }"><H1>SEATS</H1></router-link>
-    <div v-for="(data, index) in flight.seats" :key="index">
-        <h1>{{ index }}:{{ data}} </h1>
-    </div>
+    
+    
+        <h1>{{flight.number}} </h1>
+        <h1>From : {{flight.arrivalAirport}} </h1>
+        <h1>To: {{flight.departureAirport}} </h1>
+
+        <router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h2>SEATS</h2></router-link>
+    
   </template>
   
   <script>
@@ -24,7 +28,7 @@ import { doc, getDoc } from "firebase/firestore";
     async mounted() {
 
         const flightId = this.$router.currentRoute._value.params.flightId
-        const docRef = doc(db, "testmdoe", flightId);
+        const docRef = doc(db, "flights", flightId);
         const docSnap = await getDoc(docRef);
 
         this.flight = docSnap.data();

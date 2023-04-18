@@ -1,4 +1,4 @@
 <template>
-<h1>{{ flightId }}</h1>
+<h1>Będzie coś dodane</h1>
 </template>
 <script></script>
