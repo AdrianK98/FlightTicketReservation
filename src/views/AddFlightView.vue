@@ -57,7 +57,7 @@
     </div>
 </template>
 <script>
-import { db } from '../firebase/index.js';
+import { db } from '@/firebase';
 import {collection,getDocs,addDoc,setDoc,doc} from "firebase/firestore"
 
 export default {
