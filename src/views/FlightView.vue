@@ -1,12 +1,22 @@
 <template>
+    <div class="container">
+        <div class="card-mt4" >
+            <div class="wrapper">
+                <div class="bg"></div>
+            </div>
+            <div class="card-header">
 
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" style="background-color: skyblue">To: {{flight.number}} </li>
+                <li class="list-group-item">To: {{flight.departureAirport}} </li>
+                <li class="list-group-item">From: {{flight.arrivalAirport}}</li>
+                <li class="list-group-item">Duration: {{flight.flightLength}}</li>
+                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
+            </ul>
+        </div>
 
-    <h1>{{flight.number}} </h1>
-    <h1>From : {{flight.arrivalAirport}} </h1>
-    <h1>To: {{flight.departureAirport}} </h1>
-
-    <router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h2>SEATS</h2></router-link>
-
+    </div>
 </template>
 
 <script>
@@ -42,3 +52,18 @@ export default {
     }
 }
 </script>
+<style>
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    background-image: url("@/assets/cities/image1_waw.jpg");
+}
+
+.bg {
+    min-height: 300px;
+    min-width: 300px;
+    background-image: url("@/assets/cities/image2_krk.jpg");
+    clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+}
+</style>

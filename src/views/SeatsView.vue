@@ -1,24 +1,28 @@
 <template>
     <h1>Choose your seat</h1>
     <div class="container">
-        <div class="row justify-content-md-center">
+        <div class="row justify-content-center">
             <h2>Airplane Seats Map</h2>
-            <div class="row " v-for="(seatsInRow, row) in rows" :key="row">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-1" v-for="seat in seatsInRow.slice(0,3)" :key="seat.id">
-                            <div class="card" :class="{ 'bg-secondary': seat.reserved }">
-                                <div class="card-body">
-                                    {{ seat.id }}
-                                </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
+                    <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(0, 3)" :key="seat.id">
+                        <div class="card" :class="{ 'bg-secondary': seat.reserved }">
+                            <div class="card-body">
+                                {{ seat.id }}
                             </div>
                         </div>
-                        <div class="col-2"></div>
-                        <div class="col-1" v-for="seat in seatsInRow.slice(3,6)" :key="seat.id">
-                            <div class="card" :class="{ 'bg-secondary': seat.reserved }">
-                                <div class="card-body">
-                                    {{ seat.id }}
-                                </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-5">
+                <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
+                    <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(3, 6)" :key="seat.id">
+                        <div class="card" :class="{ 'bg-secondary': seat.reserved }">
+                            <div class="card-body">
+                                {{ seat.id }}
                             </div>
                         </div>
                     </div>
@@ -28,13 +32,12 @@
     </div>
 
 
-
 </template>
+
 <script>
 import { db } from '@/firebase';
 import { doc, getDoc } from "firebase/firestore";
 export default {
-
     props:{
         flightId:{
             required: true,
@@ -44,22 +47,16 @@ export default {
         return {
             seats: {},
         };
-
     },
     async mounted() {
-
         const flightId = this.$router.currentRoute._value.params.flightId
         const docRef = doc(db, "flights", flightId);
         const docSnap = await getDoc(docRef);
-
-        this.seats = docSnap.data().seats;
         if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
+            this.seats = docSnap.data().seats;
         } else {
-            // docSnap.data() will be undefined in this case
-            console.log("Failed to load")}
-
-
+            console.log("Failed to load");
+        }
     },
     methods: {
         reserveSeat(id) {
@@ -87,8 +84,26 @@ export default {
                 }
                 rows[row].push(seatInfo);
             }
-            return rows;
+            return Object.values(rows);
         },
     }
 }
 </script>
+
+<style scoped>
+.container {
+    display: flex; /* Use flexbox to align divs horizontally */
+    flex-wrap: wrap; /* Wrap the divs to new line on smaller screens */
+}
+
+.container > div {
+    flex: 1 1 100%; /* Each div should take 100% width on smaller screens */
+}
+
+@media (min-width: 768px) {
+    /* Reset flexbox styles for larger screens */
+    .container {
+        display: block;
+    }
+}
+</style>
