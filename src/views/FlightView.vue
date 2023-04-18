@@ -45,6 +45,9 @@ import { doc, getDoc } from "firebase/firestore";
             flight: {},
             departureLocationLat:'',
             departureLocationLong:'',
+            arrivalLocationLat:'',
+            arrivalLocationLong:'',
+
         };
     },
     async mounted() {
@@ -68,13 +71,26 @@ import { doc, getDoc } from "firebase/firestore";
         } else {
             console.log("Failed to load airport data")}
 
+        //Read arrival airport data
+        const arrivalAirportRef = doc(db, "airports", this.flight.arrivalAirport);
+        const arrivalAirportRefSnap = await getDoc(arrivalAirportRef);
+        if (arrivalAirportRefSnap.exists()) {
+            console.log("Document data:", arrivalAirportRefSnap.data());
+        } else {
+            console.log("Failed to load airport data")
+        }
 
 
-        console.log(departureAirportRefSnap.data().location._lat);
+
+        //Read departure long lat from firebase
         this.departureLocationLat = departureAirportRefSnap.data().location._lat;
         this.departureLocationLong = departureAirportRefSnap.data().location._long;
 
+        //Read arrival long lat from firebase
+        this.arrivalLocationLat = arrivalAirportRefSnap.data().location._lat;
+        this.arrivalLocationLong = arrivalAirportRefSnap.data().location._long;
 
+        
         await this.loadMap()
 
   
