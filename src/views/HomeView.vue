@@ -44,3 +44,9 @@ export default {
     },
 };
 </script>
+<style>
+a {
+    text-decoration: none;
+    color: inherit;
+}
+</style>
