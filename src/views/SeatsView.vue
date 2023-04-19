@@ -32,8 +32,6 @@
           </div>
       </div>
   </div>
-
-
 </template>
 
 <script>
@@ -113,18 +111,18 @@ export default {
 
 <style scoped>
 .container {
-  display: flex; /* Use flexbox to align divs horizontally */
-  flex-wrap: wrap; /* Wrap the divs to new line on smaller screens */
+    display: flex; /* Use flexbox to align divs horizontally */
+    flex-wrap: wrap; /* Wrap the divs to new line on smaller screens */
 }
 
 .container > div {
-  flex: 1 1 100%; /* Each div should take 100% width on smaller screens */
+    flex: 1 1 100%; /* Each div should take 100% width on smaller screens */
 }
 
 @media (min-width: 768px) {
-  /* Reset flexbox styles for larger screens */
-  .container {
-      display: block;
-  }
+    /* Reset flexbox styles for larger screens */
+    .container {
+        display: block;
+    }
 }
 </style>

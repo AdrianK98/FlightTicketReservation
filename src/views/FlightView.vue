@@ -1,25 +1,32 @@
 <template>
-<div class="container-md">
-  <!-- Content here -->
-
-    
-
-
-        <router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h2>SEATS</h2></router-link>
-
-        <h1>{{flight.number}} </h1>
-        <h1 data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse">Departure : {{flight.departureAirport}} </h1>
-        <h1 >Arrival: {{flight.arrivalAirport}} </h1>
-
-        <div class="collapse" id="departureMapCollapse">
-            <div class="card card-body">
-                <div id="map"></div>
+    <div class="container">
+        <div class="card-mt4" >
+            <div class="wrapper">
+                <div class="bg"></div>
             </div>
+            <div class="card-header">
+
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" style="background-color: skyblue">To: {{flight.number}} </li>
+                <li class="list-group-item">To: {{flight.departureAirport}} </li>
+                <li class="list-group-item">From: {{flight.arrivalAirport}}</li>
+                <li class="list-group-item">Duration: {{flight.flightLength}}</li>
+                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
+                <h1>{{flight.number}} </h1>
+                <h1 data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse">Departure : {{flight.departureAirport}} </h1>
+                <h1 >Arrival: {{flight.arrivalAirport}} </h1>
+                <div class="collapse" id="departureMapCollapse">
+                <div class="card card-body">
+                  <div id="map"></div>
+                  </div>
+                </div>
+            </ul>
         </div>
-        
-</div>
+
+    </div>
 </template>
-  
+
 <script>
 import VectorLayer from 'ol/layer/Vector'; // Added VectorLayer import
 import VectorSource from 'ol/source/Vector';
@@ -33,8 +40,8 @@ import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj';
 import { db } from '../firebase/index.js';
 import { doc, getDoc } from "firebase/firestore";
-  export default {
-    
+export default {
+
     props:{
         flightId:{
             required: true,
@@ -53,7 +60,6 @@ import { doc, getDoc } from "firebase/firestore";
     async mounted() {
 
         const flightId = this.$router.currentRoute._value.params.flightId
-        
         const docRef = doc(db, "flights", flightId);
         const docSnap = await getDoc(docRef);
 
@@ -61,8 +67,8 @@ import { doc, getDoc } from "firebase/firestore";
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
         } else {
-            console.log("Failed to load flight data")}
-
+            // docSnap.data() will be undefined in this case
+            console.log("Failed to load")}
         //Read depature airport data
         const departureAirportRef = doc(db, "airports", this.flight.departureAirport);
         const departureAirportRefSnap = await getDoc(departureAirportRef);
@@ -125,9 +131,21 @@ import { doc, getDoc } from "firebase/firestore";
     },
 
 }
-  </script>
-  <style scoped>
-  #map {
+</script>       
+<style>
+#map {
     height: 450px;
   }
-  </style>
+.wrapper {
+    width: 100%;
+    height: 100%;
+    background-image: url("@/assets/cities/image1_waw.jpg");
+}
+
+.bg {
+    min-height: 300px;
+    min-width: 300px;
+    background-image: url("@/assets/cities/image2_krk.jpg");
+    clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+}
+</style>
