@@ -3,6 +3,7 @@
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link> |
         <router-link to="/add_flight">Add Flight</router-link> |
+        <router-link :to="{ name: 'Reserved', params: { userId: $store.state.userId }}">Your Flights</router-link> |
         <button type="button" class="btn btn-info" @click="$store.dispatch('logout')">Logout</button>
     </div>
     <router-view/>
@@ -16,6 +17,7 @@ import 'bootstrap/dist/js/bootstrap'
 import { onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 
+
 export default {
     setup() {
         const store = useStore()
@@ -23,7 +25,9 @@ export default {
         onBeforeMount(() => {
             store.dispatch('fetchUser')
         })
-    }
+    },
+
+
 }
 
 

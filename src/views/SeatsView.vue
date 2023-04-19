@@ -23,7 +23,7 @@
               <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
                   <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(3, 6)" :key="seat.id">
                       <div class="card" :class="{ 'bg-secondary': seat.reserved }">
-                          <div class="card-body">
+                          <div class="card-body" :disabled="!seat.available" @click="reserveSeat(seat.id)">
                               {{ seat.id }}
                           </div>
                       </div>
@@ -37,7 +37,7 @@
 <script>
 import { getAuth } from "firebase/auth";
 import { db } from '@/firebase';
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
 export default {
   props:{
       flightId:{
@@ -62,7 +62,7 @@ export default {
       }
   },
   methods: {
-      async reserveSeat(id) {
+      async reserveSeat(seatId) {
           const auth = getAuth();
           const user = auth.currentUser;
           
@@ -73,13 +73,30 @@ export default {
 
 
           //ADD FIREBASE SEATS STATUS CHANGE AND ADD USERID
-          const seatReservationChangeStatus = 'seats.'+ id +'.reserved';
-          const seatReservationChangeUid = 'seats.'+ id +'.userId';
-          this.seats[id].reserved = true;
+          const seatReservationChangeStatus = 'seats.'+ seatId +'.reserved';
+          const seatReservationChangeUid = 'seats.'+ seatId +'.userId';
+          this.seats[seatId].reserved = true;
           await updateDoc(this.flightRef, {
             [seatReservationChangeStatus] : true,
             [seatReservationChangeUid]:uid,
         },{ merge: true });
+
+        // const userFlightData = {
+        //     flightId:this.flightId,
+        //     seatNum:arrayUnion(seatId),
+
+        // }
+        
+        //ADD userFlight with uid, seats and flight
+        await setDoc(doc(db, 'userFlights', uid), {},{ merge: true });
+
+        const userFlightQuery = this.flightId +'.seats';
+        await updateDoc(doc(db, 'userFlights', uid), {
+            [userFlightQuery]: arrayUnion(seatId),
+ 
+        },{ merge: true });
+
+
 
       }
   },
