@@ -1,9 +1,7 @@
 <template>
     <div class=" container-fluid">
-
-
-        <h1>Dodaj lot</h1>
-        <form @submit.prevent="addFlight">
+      <h1>Dodaj lot</h1>
+      <form @submit.prevent="addFlight">
             <div class="row justify-content-md-center">
                 <div class="col col-lg-3">
                     <label for="flight-number">Numer lotu:</label>
@@ -128,6 +126,5 @@ export default {
         },
 
     },
-
 };
 </script>
