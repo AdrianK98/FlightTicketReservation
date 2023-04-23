@@ -11,16 +11,19 @@ import {
 
 export default createStore({
   state: {
-    user: null
+    user: null,
+    userId: null
   },
   mutations: {
 
     SET_USER (state, user) {
       state.user = user
+      state.userId = user.uid
     },
 
     CLEAR_USER (state) {
       state.user = null
+      state.userId = null
     }
 
   },
