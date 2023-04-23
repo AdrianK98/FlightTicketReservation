@@ -9,13 +9,11 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" style="background-color: skyblue">To: {{flight.number}} </li>
-                <li class="list-group-item">To: {{flight.departureAirport}} </li>
-                <li class="list-group-item">From: {{flight.arrivalAirport}}</li>
+                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">To: {{flight.arrivalAirport}} </li>
+                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">From: {{flight.departureAirport}} </li>
                 <li class="list-group-item">Duration: {{flight.flightLength}}</li>
                 <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
-                <h1>{{flight.number}} </h1>
-                <h1 data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse">Departure : {{flight.departureAirport}} </h1>
-                <h1 >Arrival: {{flight.arrivalAirport}} </h1>
+
                 <div class="collapse" id="departureMapCollapse">
                 <div class="card card-body">
                   <div id="map"></div>
@@ -49,17 +47,22 @@ export default {
     },
     data() {
         return {
+            mapLat:'',
+            mapLong:'',
             flight: {},
             departureLocationLat:'',
             departureLocationLong:'',
             arrivalLocationLat:'',
             arrivalLocationLong:'',
+            map:'',
 
         };
     },
     async mounted() {
-
+        //Get flightid from route
         const flightId = this.$router.currentRoute._value.params.flightId
+
+        //Load flight document
         const docRef = doc(db, "flights", flightId);
         const docSnap = await getDoc(docRef);
 
@@ -96,14 +99,13 @@ export default {
         this.arrivalLocationLat = arrivalAirportRefSnap.data().location._lat;
         this.arrivalLocationLong = arrivalAirportRefSnap.data().location._long;
 
-        
-        await this.loadMap()
+    
 
-  
+        await this.loadMap()
     },
     methods: {
       async loadMap() {
-            const map = new Map({
+            this.map = new Map({
             target: 'map',
             layers: [
                 new TileLayer({
@@ -111,13 +113,13 @@ export default {
                 }),
             ],
             view: new View({
-                center: fromLonLat([this.departureLocationLong,this.departureLocationLat ]),
+                center: fromLonLat([this.mapLong,this.mapLat]),
                 zoom: 15,
             }),
             });
 
             const marker = new Feature({
-            geometry: new Point(fromLonLat([this.departureLocationLong,this.departureLocationLat ])),
+            geometry: new Point(fromLonLat([this.mapLong,this.mapLat])),
             });
 
             const vectorLayer = new VectorLayer({
@@ -126,7 +128,21 @@ export default {
             }),
             });
 
-            map.addLayer(vectorLayer);
+            this.map.addLayer(vectorLayer);
+        },
+
+        changeToDepartureLoc(){
+            this.mapLat = this.departureLocationLat;
+            this.mapLong = this.departureLocationLong;
+            const newCenter = fromLonLat([this.mapLong, this.mapLat]);
+            this.map.getView().setCenter(newCenter);
+        },
+        changeToArrivalLoc(){
+            this.mapLat = this.arrivalLocationLat;
+            this.mapLong = this.arrivalLocationLong;
+            const newCenter = fromLonLat([this.mapLong, this.mapLat]);
+            this.map.getView().setCenter(newCenter);
+            
         }
     },
 

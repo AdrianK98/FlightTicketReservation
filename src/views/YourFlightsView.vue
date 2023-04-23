@@ -6,7 +6,9 @@
                 <div class="card mb-4 box-shadow">
                     <router-link :to="{ name: 'Flight', params: { flightId: index } }">
                         <div class="card-body">
-                            <h5 class="card-title">Flight ID {{ index}}</h5>
+                            <h5 class="card-title">{{flight.number}}</h5>
+                            <h5 class="card-title">From: {{flight.departure}}</h5>
+                            <h5 class="card-title">To:{{flight.arrive}}</h5>
                             <p class="card-text">Seats: {{ flight.seats }}</p>
 
 
@@ -26,16 +28,24 @@ export default {
       return {
           userId:'',
           reservedFlights:[],
-
+          flightsData:'',
+          flightData:'',
       };
   },
   async mounted() {
+    //Read uid from url
     this.userId = this.$router.currentRoute._value.params.userId;
+    //Get userFlights data
     const flightsRef = doc(db, "userFlights", this.userId);
     const flightsSnap = await getDoc(flightsRef);
 
+    // const flightDataRef = doc(db, "flights", this.userId) DELETE?
+
     this.reservedFlights = flightsSnap.data();
-    console.log(this.reservedFlights);
+//    this.flightData = new Map(Object.entries(this.reservedFlights)); DELETE?
+
+
+
   },
 }
 
