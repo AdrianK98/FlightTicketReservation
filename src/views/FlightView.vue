@@ -16,6 +16,8 @@
 
                 <div class="collapse" id="departureMapCollapse">
                 <div class="card card-body">
+                    <i class="bi bi-geo-alt-fill fs-2" @click="changeToMyLoc()">My Location</i>
+                    <i class="bi bi-pin-map-fill fs-2" @click="changeToCurrentLoc()">Airport</i>
                   <div id="map"></div>
                   </div>
                 </div>
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+
 import VectorLayer from 'ol/layer/Vector'; // Added VectorLayer import
 import VectorSource from 'ol/source/Vector';
 import 'ol/ol.css';
@@ -54,6 +57,8 @@ export default {
             departureLocationLong:'',
             arrivalLocationLat:'',
             arrivalLocationLong:'',
+            currentLat:'',
+            currentLong:'',
             map:'',
 
         };
@@ -132,18 +137,45 @@ export default {
         },
 
         changeToDepartureLoc(){
+            this.currentLat=this.departureLocationLat;
+            this.currentLong = this.departureLocationLong;
             this.mapLat = this.departureLocationLat;
             this.mapLong = this.departureLocationLong;
             const newCenter = fromLonLat([this.mapLong, this.mapLat]);
             this.map.getView().setCenter(newCenter);
         },
         changeToArrivalLoc(){
+            this.currentLat=this.arrivalLocationLat;
+            this.currentLong = this.arrivalLocationLong;
             this.mapLat = this.arrivalLocationLat;
             this.mapLong = this.arrivalLocationLong;
             const newCenter = fromLonLat([this.mapLong, this.mapLat]);
             this.map.getView().setCenter(newCenter);
-            
-        }
+        
+        },
+        changeToMyLoc(){
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                console.log("Latitude: " + position.coords.latitude);
+                console.log("Longitude: " + position.coords.longitude);
+
+                this.mapLat = position.coords.latitude;
+                this.mapLong = position.coords.longitude;
+                const newCenter = fromLonLat([this.mapLong, this.mapLat]);
+                this.map.getView().setCenter(newCenter);
+            });
+}               else {
+                console.log("Geolocation is not supported by this browser.");
+                }
+
+        },
+        changeToCurrentLoc(){
+            this.mapLat = this.currentLat;
+            this.mapLong = this.currentLong;
+            const newCenter = fromLonLat([this.mapLong, this.mapLat]);
+            this.map.getView().setCenter(newCenter);
+        
+        },
     },
 
 }

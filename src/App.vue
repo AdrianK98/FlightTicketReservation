@@ -1,4 +1,7 @@
 <template>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    </head>
     <div id="nav" v-if="$store.state.user">
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link> |
