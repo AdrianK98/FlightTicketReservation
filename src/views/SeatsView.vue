@@ -135,6 +135,7 @@ export default {
     },
     handleConfirmation() {
       // Handle confirmation here
+      navigator.vibrate(200);
       console.log('Selected seat ID:', this.selectedSeatId);
       this.hideConfirmation();
       this.reserveSeat(this.selectedSeatId)

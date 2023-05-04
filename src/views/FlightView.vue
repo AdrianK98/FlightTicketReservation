@@ -41,6 +41,7 @@ import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj';
 import { db } from '../firebase/index.js';
 import { doc, getDoc } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL  } from "firebase/storage";
 export default {
 
     props:{
@@ -60,10 +61,13 @@ export default {
             currentLat:'',
             currentLong:'',
             map:'',
+            imgUrl:'',
 
         };
     },
     async mounted() {
+
+        
         //Get flightid from route
         const flightId = this.$router.currentRoute._value.params.flightId
 
@@ -84,6 +88,9 @@ export default {
             console.log("Document data:", departureAirportRefSnap.data());
         } else {
             console.log("Failed to load airport data")}
+        
+        //load airports images
+        this.loadImages(this.flight.arrivalAirport,this.flight.departureAirport)
 
         //Read arrival airport data
         const arrivalAirportRef = doc(db, "airports", this.flight.arrivalAirport);
@@ -109,6 +116,49 @@ export default {
         await this.loadMap()
     },
     methods: {
+    async loadImages(arr,dest){
+        const arrAirportRef = doc(db, "airports", arr);
+        const arrAirportSnap = await getDoc(arrAirportRef);
+        const arrAirportData = arrAirportSnap.data();
+
+        const destAirportRef = doc(db, "airports", dest);
+        const destAirportSnap = await getDoc(destAirportRef);
+        const destAirportData = destAirportSnap.data();
+
+        console.log(arr,dest);
+        console.log(arrAirportData.img);
+        const storage = getStorage();
+        getDownloadURL(ref(storage, arrAirportData.img))
+        .then((url) => {
+            
+            const divElement = document.querySelector('.bg');
+            console.log(url);
+            const imgUrlArr = url;
+            divElement.style.backgroundImage = `url('${imgUrlArr}')`;
+
+        })
+        .catch((error) => {
+            // Handle any errors
+            console.log(error)
+        });
+
+        getDownloadURL(ref(storage, destAirportData.img))
+        .then((url) => {
+            
+            const divElement = document.querySelector('.wrapper');
+            console.log(url);
+            const imgUrlDest = url;
+            divElement.style.backgroundImage = `url('${imgUrlDest}')`;
+
+        })
+        .catch((error) => {
+            // Handle any errors
+            console.log(error)
+        });
+
+
+
+        },
       async loadMap() {
             this.map = new Map({
             target: 'map',
@@ -187,13 +237,12 @@ export default {
 .wrapper {
     width: 100%;
     height: 100%;
-    background-image: url("@/assets/cities/image1_waw.jpg");
+  
 }
 
 .bg {
     min-height: 300px;
     min-width: 300px;
-    background-image: url("@/assets/cities/image2_krk.jpg");
     clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
 }
 </style>
