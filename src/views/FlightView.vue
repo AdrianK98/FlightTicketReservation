@@ -234,15 +234,25 @@ export default {
 #map {
     height: 450px;
   }
+
 .wrapper {
-    width: 100%;
-    height: 100%;
-  
+
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  max-width: 80%;
+
+
 }
 
 .bg {
-    min-height: 300px;
-    min-width: 300px;
-    clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+
+
+max-width: 100%;
+max-height: 100%;
+min-width: 100%;
+min-height: 500px;
+  clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+  background-repeat: no-repeat;
 }
 </style>
