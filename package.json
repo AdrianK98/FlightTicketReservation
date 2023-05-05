@@ -17,7 +17,7 @@
     "ol": "^7.3.0",
     "popper.js": "^1.16.1",
     "qr-scanner": "^1.4.2",
-    "quagga": "^0.12.1",
+    "quagga": "^0.6.16",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",
     "vue-qrcode-reader": "^3.1.6",

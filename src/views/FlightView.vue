@@ -18,11 +18,12 @@
                 <li class="list-group-item">Duration: {{flight.flightLength}}</li>
                 <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
 
-                <div class="collapse" id="departureMapCollapse">
+                <div class="collapse" id="departureMapCollapse" >
                 <div class="card card-body">
+                    <h4 data-bs-toggle="collapse" data-bs-target="#departureMapCollapse"> HIDE</h4>
                     <i class="bi bi-geo-alt-fill fs-2" @click="changeToMyLoc()">My Location</i>
                     <i class="bi bi-pin-map-fill fs-2" @click="changeToCurrentLoc()">Airport</i>
-                  <div id="map"></div>
+                  <div id="map" ></div>
                   </div>
                 </div>
             </ul>
@@ -66,6 +67,8 @@ export default {
             currentLong:'',
             map:'',
             imgUrl:'',
+            imgUrlArr:'',
+            imgUrlDest:'',
 
         };
     },
@@ -132,13 +135,13 @@ export default {
         console.log(arr,dest);
         console.log(arrAirportData.img);
         const storage = getStorage();
-        getDownloadURL(ref(storage, arrAirportData.img))
+        await getDownloadURL(ref(storage, arrAirportData.img))
         .then((url) => {
             
             const divElement = document.querySelector('.bg');
             console.log(url);
-            const imgUrlArr = url;
-            divElement.style.backgroundImage = `url('${imgUrlArr}')`;
+            this.imgUrlArr = url;
+            divElement.style.backgroundImage = `url('${this.imgUrlArr}')`;
 
         })
         .catch((error) => {
@@ -146,13 +149,13 @@ export default {
             console.log(error)
         });
 
-        getDownloadURL(ref(storage, destAirportData.img))
+        await getDownloadURL(ref(storage, destAirportData.img))
         .then((url) => {
             
             const divElement = document.querySelector('.wrapper');
             console.log(url);
-            const imgUrlDest = url;
-            divElement.style.backgroundImage = `url('${imgUrlDest}')`;
+            this.imgUrlDest = url;
+            divElement.style.backgroundImage = `url('${this.imgUrlDest}')`;
 
         })
         .catch((error) => {
