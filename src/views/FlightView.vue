@@ -1,9 +1,13 @@
 <template>
     <div class="container">
-        <div class="card-mt4" >
-            <div class="wrapper">
+        <div class="wrapper">
                 <div class="bg"></div>
             </div>
+</div>
+    <div class="container">
+       
+        <div class="card-mt4" >
+
             <div class="card-header">
 
             </div>
@@ -235,24 +239,25 @@ export default {
     height: 450px;
   }
 
-.wrapper {
+  .wrapper {
 
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
-  max-width: 80%;
-
-
+  background-size: cover;
+  background-position: calc(100%) calc(100%);
 }
 
 .bg {
-
-
-max-width: 100%;
-max-height: 100%;
-min-width: 100%;
-min-height: 500px;
+    width: 100%;
+  height: 100%;
   clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: calc(30%) calc(30%); 
+
+}
+.container {
+  height: 50vh;
 }
 </style>
