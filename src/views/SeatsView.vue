@@ -44,8 +44,9 @@
           </div>
       </div>
       <div>
-    <button v-for="seat in seats" :key="seat.id" @click="showConfirmation(seat.id)">Seat {{ seat.number }}</button>
+    
     <confirmation-window v-if="showingConfirmation" @close="hideConfirmation" @confirm="handleConfirmation" :title="title" :message="message" :seat-id="selectedSeatId" />
+    
   </div>
   </div>
 </template>
