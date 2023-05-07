@@ -4,7 +4,6 @@ module.exports = defineConfig({
 })
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/flight_seat_reservation/'
-    : '/'
+  publicPath: '/flight_seat_reservation/'
+
 }
