@@ -7,20 +7,24 @@
       <div class="row justify-content-center">
           <div class="col-md-5">
             <h2>Left Row</h2>
-              <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
+            <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
                   <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(0, 3)" :key="seat.id">
-                      <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-if="!seat.reserved">
-                          <div class="card-body" :disabled="!seat.available" @click="showConfirmation(seat.id)" >
+                    <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-if="!seat.reserved">
+                          <div class="card-body" :disabled="!seat.available" @click="showConfirmation(seat.id,false)" >
                               {{ seat.id }}
                           </div>
                       </div>
-                      <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-else>
-                        <div class="card-body" :disabled="!seat.available" >
+                      <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-else-if="seat.userId == this.uid">
+                        <div class="card-body"  @click="showConfirmation(seat.id,true)">
                                 {{ seat.id }}
                             </div>
                       </div>
 
-
+                      <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-else>
+                        <div class="card-body" :disabled="!seat.available">
+                                {{ seat.id }}
+                            </div>
+                      </div>
                   </div>
               </div>
           </div>
@@ -30,12 +34,18 @@
               <div class="row" v-for="(seatsInRow, row) in rows" :key="row">
                   <div class="col-4 mb-3" v-for="seat in seatsInRow.slice(3, 6)" :key="seat.id">
                     <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-if="!seat.reserved">
-                          <div class="card-body" :disabled="!seat.available" @click="showConfirmation(seat.id)" >
+                          <div class="card-body" :disabled="!seat.available" @click="showConfirmation(seat.id,false)" >
                               {{ seat.id }}
                           </div>
                       </div>
+                      <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-else-if="seat.userId == this.uid">
+                        <div class="card-body"  @click="showConfirmation(seat.id,true)">
+                                {{ seat.id }}
+                            </div>
+                      </div>
+
                       <div class="card" :class="{ 'bg-danger': seat.userId == this.uid, 'bg-secondary':seat.reserved }" v-else>
-                        <div class="card-body" :disabled="!seat.available" >
+                        <div class="card-body" :disabled="!seat.available">
                                 {{ seat.id }}
                             </div>
                       </div>
@@ -45,7 +55,7 @@
       </div>
       <div>
     
-    <confirmation-window v-if="showingConfirmation" @close="hideConfirmation" @confirm="handleConfirmation" :title="title" :message="message" :seat-id="selectedSeatId" />
+    <confirmation-window v-if="showingConfirmation" @close="hideConfirmation" @confirm="handleConfirmation" :title="title" :message="confirmationMessage" :seat-id="selectedSeatId" />
     
   </div>
   </div>
@@ -72,10 +82,12 @@ export default {
         showingConfirmation: false,
         title: 'Confirmation',
         message: 'Are you sure you want to select seat number ',
-          seats: {},
-          flightRef:'',
-          flightData:{},
-          uid:'',
+        delMessage: 'Are you sure you want to delete reservation of seat number ',
+        seats: {},
+        flightRef:'',
+        flightData:{},
+        uid:'',
+        freeReservation:null,
       };
   },
   async mounted() {
@@ -127,22 +139,51 @@ export default {
         this.selectedSeatId = null;
       },
     
-    showConfirmation(seatId) {
+    showConfirmation(seatId,freeSpace) {
+    this.freeReservation = freeSpace;
       this.selectedSeatId = seatId;
       this.showingConfirmation = true;
     },
     hideConfirmation() {
       this.showingConfirmation = false;
     },
+
     handleConfirmation() {
-      // Handle confirmation here
-      navigator.vibrate(200);
+    if(!this.freeReservation){
+        navigator.vibrate(200);
       console.log('Selected seat ID:', this.selectedSeatId);
       this.hideConfirmation();
       this.reserveSeat(this.selectedSeatId)
+    }
+    else{
+        navigator.vibrate(200);
+      console.log('deleting reservation of seat ID:', this.selectedSeatId);
+      this.hideConfirmation();
+      this.deleteReservation(this.selectedSeatId)
+
+    }
+
     },
+
+    async deleteReservation(seatId) {
+        
+        //ADD FIREBASE SEATS STATUS CHANGE AND ADD USERID
+        const seatReservationChangeStatus = 'seats.'+ seatId;
+        this.seats[seatId].reserved = false;
+          await updateDoc(this.flightRef, {
+            [seatReservationChangeStatus] : {reserved:false},
+
+        },{ merge: false });
+
+
+        console.log("Deleted seat "+seatId+" from reservation")
+    },
+
   },
   computed: {
+    confirmationMessage() {
+      return this.freeReservation ? this.delMessage : this.message;
+    },
       rows() {
           const rows = {};
           for (const seat in this.seats) {
