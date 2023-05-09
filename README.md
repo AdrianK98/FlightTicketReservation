@@ -1,4 +1,4 @@
-# FlightTicketReservation
+# FlightTicketReservation - SeatFly
 > Application created for the purpose of passing the subject "Mobile applications"
 
 ## What It Is:
