@@ -16,7 +16,7 @@
                 <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">To: {{flight.arrivalAirport}} </li>
                 <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">From: {{flight.departureAirport}} </li>
                 <li class="list-group-item">Duration: {{flight.flightLength}}</li>
-                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
+                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h5>SEATS</h5></router-link></li>
 
                 <div class="collapse" id="departureMapCollapse" >
                 <div class="card card-body">
@@ -83,7 +83,7 @@ export default {
     },
     async mounted() {
 
-        navigator.geolocation.getCurrentPosition((position) => {
+        await navigator.geolocation.getCurrentPosition((position) => {
 
                 const curPosLat = position.coords.latitude;
                 const curPosLong = position.coords.longitude;
