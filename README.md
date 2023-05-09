@@ -8,7 +8,7 @@ The application offers a simple and user-friendly interface that allows users to
 
 Moreover, SeatFly provides users with the ability to view their booking details, including their flight itinerary, seat selection, and flight status. The application also has a QR code scanner which will direct the user to his flights page
 
-With SeatFly, users can be confident that their airline seat reservation is hassle-free and secure. The application uses state-of-the-art security measures to protect users' personal and financial information. Overall, SeatFly is a top-of-the-line application for booking airline tickets, offering a seamless user experience and a range of helpful features.
+With SeatFly, users can be confident that their airline seat reservation is hassle-free and secure. The application uses state-of-the-art security measures to protect users' personal and financial information. Overall, SeatFly is a top-of-the-line application for booking airline ticket seats, offering a seamless user experience and a range of helpful features.
 
 ## Authors:
 - DB-110
