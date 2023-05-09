@@ -25,3 +25,7 @@ With SeatFly, users can be confident that their airline seat reservation is hass
 <a href="https://marvelapp.com/prototype/19agj84j" target="_blank">
   <img src="https://github.com/AdrianK98/flight_seat_reservation/blob/main/Marvel_app_view.png" alt="Example view of the application">
 </a>
+
+## Copyright &copy; 2023 DB-AK-RG
+All rights reserved. This project and its contents are protected by copyright law and may not be reproduced, distributed, or used in any way without permission. The use of any images, logos, and names included in this project, whether in PNG, JPG/JPEG, or any other format, is strictly prohibited without permission.
+All content, code, and designs on the flight_seat_reservation GitHub page are the intellectual property of DB-AK-RG and are protected under international copyright laws. Any unauthorized reproduction, modification, distribution, or display of this content is strictly prohibited. DB-AK-RG reserves all rights to pursue legal action against individuals or entities who violate its intellectual property rights.
