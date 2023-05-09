@@ -16,4 +16,4 @@ A simple SPA application that allows you to log into your account using OAuth or
 Coming soon
 
 ## Application prototype:
-Coming soon
+Marvel flight_seat_reservation APP: https://marvelapp.com/prototype/19agj84j
