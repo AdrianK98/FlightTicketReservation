@@ -110,7 +110,7 @@ export default {
                     id : docRef.id,
                     seats: {}
                 }
-                for (let i = 1; i <= 200; i++) {
+                for (let i = 1; i <= 90; i++) {
                     seatData.seats[i] = {reserved:false};
                 }
 

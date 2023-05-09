@@ -11,21 +11,26 @@ import {
 
 export default createStore({
   state: {
-    user: null
+    user: null,
+    userId: null
   },
   mutations: {
 
     SET_USER (state, user) {
+
       state.user = user
+      state.userId = user.uid
     },
 
     CLEAR_USER (state) {
       state.user = null
+      state.userId = null
     }
 
   },
   actions: {
     async login ({ commit }, details) {
+   
       const { email, password } = details
 
       try {
@@ -76,6 +81,8 @@ export default createStore({
     },
 
     async logout ({ commit }) {
+
+
       await signOut(auth)
 
       commit('CLEAR_USER')
