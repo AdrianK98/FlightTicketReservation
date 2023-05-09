@@ -22,6 +22,6 @@ With SeatFly, users can be confident that their airline seat reservation is hass
 ![Use case diagram](https://github.com/AdrianK98/flight_seat_reservation/blob/main/Use_case_diagram.png)
 
 ## Application prototype:
-[Click here to view the Marvel app prototype](<a href="https://marvelapp.com/prototype/19agj84j" target="_blank">Link to Marvel App</a>)
+[Click here to view the Marvel app prototype](https://marvelapp.com/prototype/19agj84j)
 
 
