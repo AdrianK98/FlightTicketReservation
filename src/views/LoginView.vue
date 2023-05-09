@@ -11,6 +11,9 @@
                         <input type="password" class="form-control" placeholder="Password" v-model="login_form.password" />
                     </div>
                     <button type="submit" class="btn btn-primary btn-block mt-4">Login</button>
+                    <button @click.prevent="loginWithGoogle" class="btn btn-danger btn-block mt-4">
+                        <i class="fab fa-google"></i> Login with Google 
+                    </button>
                 </form>
             </div>
             <div class="col-md-6 col-lg-4">
@@ -31,8 +34,22 @@
 <script>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {auth} from "@/firebase";
 
 export default {
+    data() {
+      return {
+        audio: null,
+        soundUrl: 'https://cdn.pixabay.com/download/audio/2022/03/20/audio_5608de38a9.mp3?filename=annoyed-goodbye-96952.mp3'
+      }
+    },
+    mounted() {
+      this.audio = new Audio(this.soundUrl);
+      this.audio.currentTime = 0;
+        this.audio.play();
+    },
+
     setup() {
         const login_form = ref({});
         const register_form = ref({});
@@ -46,13 +63,26 @@ export default {
             store.dispatch('register', register_form.value);
         }
 
+        const loginWithGoogle = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                console.log('Logged in with Google: ', user);
+            } catch (error) {
+                console.log('Error logging in with Google: ', error.message);
+            }
+        }
+
         return {
             login_form,
             register_form,
             login,
-            register
+            register,
+            loginWithGoogle
         }
-    }
+    },
+    
 }
 import 'bootstrap/dist/css/bootstrap.css'
 import 'jquery'
@@ -70,7 +100,7 @@ body {
 }
 
 .card {
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {

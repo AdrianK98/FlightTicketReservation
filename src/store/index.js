@@ -4,26 +4,33 @@ import { auth } from '@/firebase'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth'
 
 export default createStore({
   state: {
-    user: null
+    user: null,
+    userId: null
   },
   mutations: {
 
     SET_USER (state, user) {
+
       state.user = user
+      state.userId = user.uid
     },
 
     CLEAR_USER (state) {
       state.user = null
+      state.userId = null
     }
 
   },
   actions: {
     async login ({ commit }, details) {
+   
       const { email, password } = details
 
       try {
@@ -74,11 +81,25 @@ export default createStore({
     },
 
     async logout ({ commit }) {
+
+
       await signOut(auth)
 
       commit('CLEAR_USER')
 
       await router.push('/login')
+    },
+
+    async loginWithGoogle({commit}) {
+      const provider = new GoogleAuthProvider()
+      try {
+        const result = await signInWithPopup(auth, provider)
+        const user = result.user
+        commit('SET_USER', user)
+        await router.push('/')
+      } catch (error) {
+        alert("Something went wrong")
+      }
     },
 
     fetchUser ({ commit }) {
