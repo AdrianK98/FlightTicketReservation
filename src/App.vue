@@ -1,7 +1,10 @@
 <template>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    </head>
     <div id="nav" v-if="$store.state.user">
         <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> |
+        <router-link to="/about">Scan QR code</router-link> |
         <router-link to="/add_flight">Add Flight</router-link> |
         <router-link :to="{ name: 'Reserved', params: { userId: $store.state.userId }}">Your Flights</router-link> |
         <button type="button" class="btn btn-info" @click="$store.dispatch('logout')">Logout</button>

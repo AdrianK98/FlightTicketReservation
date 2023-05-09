@@ -17,6 +17,7 @@ export default createStore({
   mutations: {
 
     SET_USER (state, user) {
+
       state.user = user
       state.userId = user.uid
     },
@@ -29,6 +30,7 @@ export default createStore({
   },
   actions: {
     async login ({ commit }, details) {
+   
       const { email, password } = details
 
       try {
@@ -79,6 +81,8 @@ export default createStore({
     },
 
     async logout ({ commit }) {
+
+
       await signOut(auth)
 
       commit('CLEAR_USER')

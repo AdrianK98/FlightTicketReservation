@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+
         <div class="row">
             <div class="col-md-4" v-for="(flight, index) in flights" :key="index">
 
@@ -26,6 +27,7 @@
 import { db } from '@/firebase';
 import { collection, getDocs } from "firebase/firestore";
 
+
 export default {
     data() {
         return {
@@ -42,7 +44,8 @@ export default {
             console.error(`Error fetching flights: ${error}`);
         }
     },
-};
+    
+}
 </script>
 <style>
 a {
