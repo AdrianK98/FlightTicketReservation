@@ -46,11 +46,15 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
+import Icon from 'ol/style/Icon';
+import Style from 'ol/style/Style';
 import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj';
 import { db } from '../firebase/index.js';
 import { doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL  } from "firebase/storage";
+import markerIconRed from '@/assets/location-pin.png';
+import markerIconGreen from '@/assets/gps.png';
 export default {
 
     props:{
@@ -73,10 +77,20 @@ export default {
             imgUrl:'',
             imgUrlArr:'',
             imgUrlDest:'',
+            latLongCurrentPosition:'',
 
         };
     },
     async mounted() {
+
+        navigator.geolocation.getCurrentPosition((position) => {
+
+                const curPosLat = position.coords.latitude;
+                const curPosLong = position.coords.longitude;
+                this.latLongCurrentPosition = fromLonLat([curPosLong, curPosLat]);
+
+
+            });
 
         
         //Get flightid from route
@@ -184,17 +198,56 @@ export default {
             }),
             });
 
-            const marker = new Feature({
-            geometry: new Point(fromLonLat([this.mapLong,this.mapLat])),
-            });
+            const departureMarker = new Feature({
+            geometry: new Point(fromLonLat([this.departureLocationLong, this.departureLocationLat])),
+        });
 
-            const vectorLayer = new VectorLayer({
-            source: new VectorSource({
-            features: [marker],
-            }),
-            });
 
-            this.map.addLayer(vectorLayer);
+        const curMarker = new Feature({
+            geometry: new Point(this.latLongCurrentPosition),
+        });        
+        
+        const arrivalMarker = new Feature({
+            geometry: new Point(fromLonLat([this.arrivalLocationLong, this.arrivalLocationLat])),
+        });
+
+        var iconStyleRed = new Style({
+    image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: markerIconRed
+    }))
+})
+
+var iconStyleGreen = new Style({
+    image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: markerIconGreen
+    }))
+})
+
+
+  departureMarker.setStyle(iconStyleRed);
+  arrivalMarker.setStyle(iconStyleRed);
+  curMarker.setStyle(iconStyleGreen);
+        
+
+
+        const vectorSource = new VectorSource({
+            features: [departureMarker, arrivalMarker,curMarker],
+        });
+
+        const vectorLayer = new VectorLayer({
+            source: vectorSource,
+        });
+
+
+
+
+        this.map.addLayer(vectorLayer);
         },
 
         changeToDepartureLoc(){
@@ -215,19 +268,7 @@ export default {
         
         },
         changeToMyLoc(){
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                console.log("Latitude: " + position.coords.latitude);
-                console.log("Longitude: " + position.coords.longitude);
-
-                this.mapLat = position.coords.latitude;
-                this.mapLong = position.coords.longitude;
-                const newCenter = fromLonLat([this.mapLong, this.mapLat]);
-                this.map.getView().setCenter(newCenter);
-            });
-}               else {
-                console.log("Geolocation is not supported by this browser.");
-                }
+                this.map.getView().setCenter(this.latLongCurrentPosition);
 
         },
         changeToCurrentLoc(){
