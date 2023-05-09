@@ -13,7 +13,7 @@ A simple SPA application that allows you to log into your account using OAuth or
 ![OUR FlightTicketReservation APP SCREENSHOT](./ "D")
 
 ## UML Use Case Diagram:
-Coming soon
+<img>https://github.com/AdrianK98/flight_seat_reservation/blob/main/Use_case_diagram.png
 
 ## Application prototype:
 Marvel flight_seat_reservation APP: https://marvelapp.com/prototype/19agj84j
