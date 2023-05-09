@@ -16,4 +16,4 @@ A simple SPA application that allows you to log into your account using OAuth or
 ![Use case diagram](https://github.com/AdrianK98/flight_seat_reservation/blob/main/Use_case_diagram.png)
 
 ## Application prototype:
-[Click here to view the Marvel app prototype]([https://marvelapp.com/12345](https://marvelapp.com/prototype/19agj84j))
+[Click here to view the Marvel app prototype](https://marvelapp.com/prototype/19agj84j)
