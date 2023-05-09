@@ -5,4 +5,6 @@ module.exports = defineConfig({
       ? '/flight_seat_reservation/'
       : '/',
   transpileDependencies: true
+
 })
+

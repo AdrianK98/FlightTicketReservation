@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <div class="wrapper">
+
             <div class="bg"></div>
         </div>
     </div>
@@ -12,30 +13,28 @@
 
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" style="background-color: skyblue">No.{{ flight.number }}</li>
-                <li aria-controls="departureMapCollapse" aria-expanded="false" class="list-group-item"
-                    data-bs-target="#departureMapCollapse" data-bs-toggle="collapse" @click="changeToArrivalLoc()">To:
-                    {{ flight.arrivalAirport }}
-                </li>
-                <li aria-controls="departureMapCollapse" aria-expanded="false" class="list-group-item"
-                    data-bs-target="#departureMapCollapse" data-bs-toggle="collapse" @click="changeToDepartureLoc()">From:
-                    {{ flight.departureAirport }}
-                </li>
-                <li class="list-group-item">Duration: {{ flight.flightLength }}</li>
-                <li class="list-group-item">
-                    <router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link>
-                </li>
 
-                <div id="departureMapCollapse" class="collapse">
-                    <div class="card card-body">
-                        <h4 data-bs-target="#departureMapCollapse" data-bs-toggle="collapse"> HIDE</h4>
-                        <i class="bi bi-geo-alt-fill fs-2" @click="changeToMyLoc()">My Location</i>
-                        <i class="bi bi-pin-map-fill fs-2" @click="changeToCurrentLoc()">Airport</i>
-                        <div id="map"></div>
-                    </div>
+                <li class="list-group-item" style="background-color: skyblue">No.{{flight.number}} </li>
+                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">To: {{flight.arrivalAirport}} </li>
+                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">From: {{flight.departureAirport}} </li>
+                <li class="list-group-item">Duration: {{flight.flightLength}}</li>
+                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
+
+                <div class="collapse" id="departureMapCollapse" >
+                <div class="card card-body">
+                    <h4 data-bs-toggle="collapse" data-bs-target="#departureMapCollapse"> HIDE</h4>
+                    <i class="bi bi-geo-alt-fill fs-2" @click="changeToMyLoc()">My Location</i>
+                    <i class="bi bi-pin-map-fill fs-2" @click="changeToCurrentLoc()">Airport</i>
+                  <div id="map" ></div>
+                  </div>
+
                 </div>
             </ul>
         </div>
+    </div>
+    <div class="container-fluid">
+
+
     </div>
 </template>
 
@@ -54,7 +53,6 @@ import {fromLonLat} from 'ol/proj';
 import {db} from '@/firebase';
 import {doc, getDoc} from "firebase/firestore";
 import {getStorage, ref, getDownloadURL} from "firebase/storage";
-
 export default {
 
     props: {
@@ -64,24 +62,24 @@ export default {
     },
     data() {
         return {
-            mapLat: '',
-            mapLong: '',
+            mapLat:'',
+            mapLong:'',
             flight: {},
-            departureLocationLat: '',
-            departureLocationLong: '',
-            arrivalLocationLat: '',
-            arrivalLocationLong: '',
-            currentLat: '',
-            currentLong: '',
-            map: '',
-            imgUrl: '',
-            imgUrlArr: '',
-            imgUrlDest: '',
+            departureLocationLat:'',
+            departureLocationLong:'',
+            arrivalLocationLat:'',
+            arrivalLocationLong:'',
+            currentLat:'',
+            currentLong:'',
+            map:'',
+            imgUrl:'',
+            imgUrlArr:'',
+            imgUrlDest:'',
+
 
         };
     },
     async mounted() {
-
 
         //Get flightid from route
         const flightId = this.$router.currentRoute._value.params.flightId
@@ -103,11 +101,13 @@ export default {
         if (departureAirportRefSnap.exists()) {
             console.log("Document data:", departureAirportRefSnap.data());
         } else {
+
             console.log("Failed to load airport data")
         }
 
         //load airports images
         this.loadImages(this.flight.arrivalAirport, this.flight.departureAirport)
+
 
         //Read arrival airport data
         const arrivalAirportRef = doc(db, "airports", this.flight.arrivalAirport);
@@ -131,64 +131,67 @@ export default {
         await this.loadMap()
     },
     methods: {
-        async loadImages(arr, dest) {
-            const arrAirportRef = doc(db, "airports", arr);
-            const arrAirportSnap = await getDoc(arrAirportRef);
-            const arrAirportData = arrAirportSnap.data();
 
-            const destAirportRef = doc(db, "airports", dest);
-            const destAirportSnap = await getDoc(destAirportRef);
-            const destAirportData = destAirportSnap.data();
+    async loadImages(arr,dest){
+        const arrAirportRef = doc(db, "airports", arr);
+        const arrAirportSnap = await getDoc(arrAirportRef);
+        const arrAirportData = arrAirportSnap.data();
 
-            console.log(arr, dest);
-            console.log(arrAirportData.img);
-            const storage = getStorage();
-            await getDownloadURL(ref(storage, arrAirportData.img))
-                .then((url) => {
+        const destAirportRef = doc(db, "airports", dest);
+        const destAirportSnap = await getDoc(destAirportRef);
+        const destAirportData = destAirportSnap.data();
 
-                    const divElement = document.querySelector('.bg');
-                    console.log(url);
-                    this.imgUrlArr = url;
-                    divElement.style.backgroundImage = `url('${this.imgUrlArr}')`;
+        console.log(arr,dest);
+        console.log(arrAirportData.img);
+        const storage = getStorage();
+        await getDownloadURL(ref(storage, arrAirportData.img))
+        .then((url) => {
+            
+            const divElement = document.querySelector('.bg');
+            console.log(url);
+            this.imgUrlArr = url;
+            divElement.style.backgroundImage = `url('${this.imgUrlArr}')`;
 
-                })
-                .catch((error) => {
-                    // Handle any errors
-                    console.log(error)
-                });
+        })
+        .catch((error) => {
+            // Handle any errors
+            console.log(error)
+        });
 
-            await getDownloadURL(ref(storage, destAirportData.img))
-                .then((url) => {
+        await getDownloadURL(ref(storage, destAirportData.img))
+        .then((url) => {
+            
+            const divElement = document.querySelector('.wrapper');
+            console.log(url);
+            this.imgUrlDest = url;
+            divElement.style.backgroundImage = `url('${this.imgUrlDest}')`;
 
-                    const divElement = document.querySelector('.wrapper');
-                    console.log(url);
-                    this.imgUrlDest = url;
-                    divElement.style.backgroundImage = `url('${this.imgUrlDest}')`;
+        })
+        .catch((error) => {
+            // Handle any errors
+            console.log(error)
+        });
 
-                })
-                .catch((error) => {
-                    // Handle any errors
-                    console.log(error)
-                });
 
 
         },
-        async loadMap() {
+      async loadMap() {
             this.map = new Map({
-                target: 'map',
-                layers: [
-                    new TileLayer({
-                        source: new OSM(),
-                    }),
-                ],
-                view: new View({
-                    center: fromLonLat([this.mapLong, this.mapLat]),
-                    zoom: 15,
+            target: 'map',
+            layers: [
+                new TileLayer({
+                source: new OSM(),
                 }),
+            ],
+            view: new View({
+                center: fromLonLat([this.mapLong,this.mapLat]),
+                zoom: 15,
+            }),
             });
 
             const marker = new Feature({
-                geometry: new Point(fromLonLat([this.mapLong, this.mapLat])),
+            geometry: new Point(fromLonLat([this.mapLong,this.mapLat])),
+
             });
 
             const vectorLayer = new VectorLayer({
@@ -200,44 +203,51 @@ export default {
             this.map.addLayer(vectorLayer);
         },
 
-        changeToDepartureLoc() {
-            this.currentLat = this.departureLocationLat;
+
+        changeToDepartureLoc(){
+            this.currentLat=this.departureLocationLat;
+
             this.currentLong = this.departureLocationLong;
             this.mapLat = this.departureLocationLat;
             this.mapLong = this.departureLocationLong;
             const newCenter = fromLonLat([this.mapLong, this.mapLat]);
             this.map.getView().setCenter(newCenter);
         },
-        changeToArrivalLoc() {
-            this.currentLat = this.arrivalLocationLat;
+
+        changeToArrivalLoc(){
+            this.currentLat=this.arrivalLocationLat;
+
             this.currentLong = this.arrivalLocationLong;
             this.mapLat = this.arrivalLocationLat;
             this.mapLong = this.arrivalLocationLong;
             const newCenter = fromLonLat([this.mapLong, this.mapLat]);
             this.map.getView().setCenter(newCenter);
 
+        
         },
-        changeToMyLoc() {
+        changeToMyLoc(){
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((position) => {
-                    console.log("Latitude: " + position.coords.latitude);
-                    console.log("Longitude: " + position.coords.longitude);
+                console.log("Latitude: " + position.coords.latitude);
+                console.log("Longitude: " + position.coords.longitude);
 
-                    this.mapLat = position.coords.latitude;
-                    this.mapLong = position.coords.longitude;
-                    const newCenter = fromLonLat([this.mapLong, this.mapLat]);
-                    this.map.getView().setCenter(newCenter);
-                });
-            } else {
+                this.mapLat = position.coords.latitude;
+                this.mapLong = position.coords.longitude;
+                const newCenter = fromLonLat([this.mapLong, this.mapLat]);
+                this.map.getView().setCenter(newCenter);
+            });
+}               else {
                 console.log("Geolocation is not supported by this browser.");
-            }
+                }
 
         },
-        changeToCurrentLoc() {
+        changeToCurrentLoc(){
+
             this.mapLat = this.currentLat;
             this.mapLong = this.currentLong;
             const newCenter = fromLonLat([this.mapLong, this.mapLat]);
             this.map.getView().setCenter(newCenter);
+
         },
     },
 
@@ -246,28 +256,31 @@ export default {
 <style>
 #map {
     height: 450px;
-}
 
-.wrapper {
+  }
 
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: calc(100%) calc(100%);
+  .wrapper {
+
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: calc(100%) calc(100%);
+
 }
 
 .bg {
     width: 100%;
-    height: 100%;
-    clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: calc(30%) calc(30%);
+
+  height: 100%;
+  clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: calc(30%) calc(30%); 
 
 }
-
 .container {
-    height: 50vh;
+  height: 50vh;
+
 }
 </style>
