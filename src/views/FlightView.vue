@@ -15,7 +15,7 @@
                 <li class="list-group-item" style="background-color: skyblue">No.{{flight.number}} </li>
                 <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">To: {{flight.arrivalAirport}} </li>
                 <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">From: {{flight.departureAirport}} </li>
-                <li class="list-group-item">Duration: {{flight.flightLength}}</li>
+                <li class="list-group-item">Duration: {{flight.flightLength}} Hours</li>
                 <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h5>SEATS</h5></router-link></li>
 
                 <div class="collapse" id="departureMapCollapse" >
@@ -102,7 +102,7 @@ export default {
 
         this.flight = docSnap.data();
         if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
+            console.log("Document data has beed read");
         } else {
             // docSnap.data() will be undefined in this case
             console.log("Failed to load")}
@@ -110,18 +110,25 @@ export default {
         const departureAirportRef = doc(db, "airports", this.flight.departureAirport);
         const departureAirportRefSnap = await getDoc(departureAirportRef);
         if (departureAirportRefSnap.exists()) {
-            console.log("Document data:", departureAirportRefSnap.data());
+            console.log("Document data has beed read");
         } else {
             console.log("Failed to load airport data")}
         
         //load airports images
-        this.loadImages(this.flight.arrivalAirport,this.flight.departureAirport)
+
+        try {
+      await this.loadImages(this.flight.arrivalAirport, this.flight.departureAirport);
+
+    } catch (error) {
+      console.log(error);
+    }
+
 
         //Read arrival airport data
         const arrivalAirportRef = doc(db, "airports", this.flight.arrivalAirport);
         const arrivalAirportRefSnap = await getDoc(arrivalAirportRef);
         if (arrivalAirportRefSnap.exists()) {
-            console.log("Document data:", arrivalAirportRefSnap.data());
+            console.log("Document data has beed read");
         } else {
             console.log("Failed to load airport data")
         }
@@ -150,14 +157,11 @@ export default {
         const destAirportSnap = await getDoc(destAirportRef);
         const destAirportData = destAirportSnap.data();
 
-        console.log(arr,dest);
-        console.log(arrAirportData.img);
         const storage = getStorage();
         await getDownloadURL(ref(storage, arrAirportData.img))
         .then((url) => {
             
             const divElement = document.querySelector('.bg');
-            console.log(url);
             this.imgUrlArr = url;
             divElement.style.backgroundImage = `url('${this.imgUrlArr}')`;
 
@@ -171,7 +175,6 @@ export default {
         .then((url) => {
             
             const divElement = document.querySelector('.wrapper');
-            console.log(url);
             this.imgUrlDest = url;
             divElement.style.backgroundImage = `url('${this.imgUrlDest}')`;
 
