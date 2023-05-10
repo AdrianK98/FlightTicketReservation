@@ -10,7 +10,7 @@
                             <h5 class="card-title">Flight No. {{ flight.number }}</h5>
                             <p class="card-text">Departure: {{ flight.departureAirport }}</p>
                             <p class="card-text">Arrival: {{ flight.arrivalAirport }}</p>
-                            <p class="card-text">Flight Lenght: {{ flight.flightLength }} Godzin</p>
+                            <p class="card-text">Flight Lenght: {{ flight.flightLength }} Hours</p>
                             <p class="card-text">Departure Time: {{ flight.departureTime }}</p>
                             <p class="card-text">Arrival time: {{ flight.arrivalTime }}</p>
                             <p class="card-text">Price: {{ flight.price }} zł</p>
