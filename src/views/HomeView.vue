@@ -39,7 +39,6 @@ export default {
             const flightsRef = collection(db, 'flights');
             const snapshot = await getDocs(flightsRef);
             this.flights = snapshot.docs.map(doc => doc.data());
-            console.log(this.flights);
         } catch (error) {
             console.error(`Error fetching flights: ${error}`);
         }

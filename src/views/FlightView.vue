@@ -15,8 +15,8 @@
                 <li class="list-group-item" style="background-color: skyblue">No.{{flight.number}} </li>
                 <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">To: {{flight.arrivalAirport}} </li>
                 <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">From: {{flight.departureAirport}} </li>
-                <li class="list-group-item">Duration: {{flight.flightLength}}</li>
-                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}">SEATS</router-link></li>
+                <li class="list-group-item">Duration: {{flight.flightLength}} Hours</li>
+                <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h5>SEATS</h5></router-link></li>
 
                 <div class="collapse" id="departureMapCollapse" >
                 <div class="card card-body">
@@ -46,11 +46,15 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
+import Icon from 'ol/style/Icon';
+import Style from 'ol/style/Style';
 import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj';
 import { db } from '../firebase/index.js';
 import { doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL  } from "firebase/storage";
+import markerIconRed from '@/assets/location-pin.png';
+import markerIconGreen from '@/assets/gps.png';
 export default {
 
     props:{
@@ -73,10 +77,20 @@ export default {
             imgUrl:'',
             imgUrlArr:'',
             imgUrlDest:'',
+            latLongCurrentPosition:'',
 
         };
     },
     async mounted() {
+
+        await navigator.geolocation.getCurrentPosition((position) => {
+
+                const curPosLat = position.coords.latitude;
+                const curPosLong = position.coords.longitude;
+                this.latLongCurrentPosition = fromLonLat([curPosLong, curPosLat]);
+
+
+            });
 
         
         //Get flightid from route
@@ -88,7 +102,7 @@ export default {
 
         this.flight = docSnap.data();
         if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
+            console.log("Document data has beed read");
         } else {
             // docSnap.data() will be undefined in this case
             console.log("Failed to load")}
@@ -96,18 +110,25 @@ export default {
         const departureAirportRef = doc(db, "airports", this.flight.departureAirport);
         const departureAirportRefSnap = await getDoc(departureAirportRef);
         if (departureAirportRefSnap.exists()) {
-            console.log("Document data:", departureAirportRefSnap.data());
+            console.log("Document data has beed read");
         } else {
             console.log("Failed to load airport data")}
         
         //load airports images
-        this.loadImages(this.flight.arrivalAirport,this.flight.departureAirport)
+
+        try {
+      await this.loadImages(this.flight.arrivalAirport, this.flight.departureAirport);
+
+    } catch (error) {
+      console.log(error);
+    }
+
 
         //Read arrival airport data
         const arrivalAirportRef = doc(db, "airports", this.flight.arrivalAirport);
         const arrivalAirportRefSnap = await getDoc(arrivalAirportRef);
         if (arrivalAirportRefSnap.exists()) {
-            console.log("Document data:", arrivalAirportRefSnap.data());
+            console.log("Document data has beed read");
         } else {
             console.log("Failed to load airport data")
         }
@@ -136,14 +157,11 @@ export default {
         const destAirportSnap = await getDoc(destAirportRef);
         const destAirportData = destAirportSnap.data();
 
-        console.log(arr,dest);
-        console.log(arrAirportData.img);
         const storage = getStorage();
         await getDownloadURL(ref(storage, arrAirportData.img))
         .then((url) => {
             
             const divElement = document.querySelector('.bg');
-            console.log(url);
             this.imgUrlArr = url;
             divElement.style.backgroundImage = `url('${this.imgUrlArr}')`;
 
@@ -157,7 +175,6 @@ export default {
         .then((url) => {
             
             const divElement = document.querySelector('.wrapper');
-            console.log(url);
             this.imgUrlDest = url;
             divElement.style.backgroundImage = `url('${this.imgUrlDest}')`;
 
@@ -184,17 +201,56 @@ export default {
             }),
             });
 
-            const marker = new Feature({
-            geometry: new Point(fromLonLat([this.mapLong,this.mapLat])),
-            });
+            const departureMarker = new Feature({
+            geometry: new Point(fromLonLat([this.departureLocationLong, this.departureLocationLat])),
+        });
 
-            const vectorLayer = new VectorLayer({
-            source: new VectorSource({
-            features: [marker],
-            }),
-            });
 
-            this.map.addLayer(vectorLayer);
+        const curMarker = new Feature({
+            geometry: new Point(this.latLongCurrentPosition),
+        });        
+        
+        const arrivalMarker = new Feature({
+            geometry: new Point(fromLonLat([this.arrivalLocationLong, this.arrivalLocationLat])),
+        });
+
+        var iconStyleRed = new Style({
+    image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: markerIconRed
+    }))
+})
+
+var iconStyleGreen = new Style({
+    image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: markerIconGreen
+    }))
+})
+
+
+  departureMarker.setStyle(iconStyleRed);
+  arrivalMarker.setStyle(iconStyleRed);
+  curMarker.setStyle(iconStyleGreen);
+        
+
+
+        const vectorSource = new VectorSource({
+            features: [departureMarker, arrivalMarker,curMarker],
+        });
+
+        const vectorLayer = new VectorLayer({
+            source: vectorSource,
+        });
+
+
+
+
+        this.map.addLayer(vectorLayer);
         },
 
         changeToDepartureLoc(){
@@ -215,19 +271,7 @@ export default {
         
         },
         changeToMyLoc(){
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                console.log("Latitude: " + position.coords.latitude);
-                console.log("Longitude: " + position.coords.longitude);
-
-                this.mapLat = position.coords.latitude;
-                this.mapLong = position.coords.longitude;
-                const newCenter = fromLonLat([this.mapLong, this.mapLat]);
-                this.map.getView().setCenter(newCenter);
-            });
-}               else {
-                console.log("Geolocation is not supported by this browser.");
-                }
+                this.map.getView().setCenter(this.latLongCurrentPosition);
 
         },
         changeToCurrentLoc(){

@@ -1,7 +1,22 @@
 <template>
   <h1>Choose your seat</h1><br><br>
   <div class="container">
-      <div class="row justify-content-center">
+
+  <div class="row">
+    <div class="col">
+      <span class="badge bg-white w-auto px-5 py-3 m-2 text-dark">    Free     </span>
+    </div>
+    <div class="col">
+      <span class="badge bg-secondary w-auto p-3 m-2">Already Reserved</span>
+    </div>
+    <div class="col">
+      <span class="badge bg-danger w-auto p-3 m-2">Reserved by you</span>
+    </div>
+  </div>
+
+
+
+      <div class="row justify-content-center mt-5">
           <h2>Front of the Plane</h2>
       </div>
       <div class="row justify-content-center">
@@ -129,6 +144,7 @@ export default {
         const userFlightQueryNum = this.flightId +'.number';
         const userFlightQueryArrival = this.flightId +'.arrive';
         const userFlightQueryDeparture = this.flightId +'.departure';
+        seatId = parseInt(seatId);
         await updateDoc(doc(db, 'userFlights', this.uid), {
             [userFlightQuerySeats]: arrayUnion(seatId),
             [userFlightQueryNum]: this.flightData.number,
