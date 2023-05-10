@@ -7,13 +7,13 @@
                 <div class="card mb-4 box-shadow">
                     <router-link :to="{ name: 'Flight', params: { flightId: flight.id } }">
                         <div class="card-body">
-                            <h5 class="card-title">Lot nr {{ flight.number }}</h5>
-                            <p class="card-text">Lotnisko wylotu: {{ flight.departureAirport }}</p>
-                            <p class="card-text">Lotnisko przylotu: {{ flight.arrivalAirport }}</p>
-                            <p class="card-text">Długość lotu: {{ flight.flightLength }}</p>
-                            <p class="card-text">Godzina wylotu: {{ flight.departureTime }}</p>
-                            <p class="card-text">Godzina przylotu: {{ flight.arrivalTime }}</p>
-                            <p class="card-text">Cena: {{ flight.price }} zł</p>
+                            <h5 class="card-title">Flight No. {{ flight.number }}</h5>
+                            <p class="card-text">Departure: {{ flight.departureAirport }}</p>
+                            <p class="card-text">Arrival: {{ flight.arrivalAirport }}</p>
+                            <p class="card-text">Flight Lenght: {{ flight.flightLength }} Godzin</p>
+                            <p class="card-text">Departure Time: {{ flight.departureTime }}</p>
+                            <p class="card-text">Arrival time: {{ flight.arrivalTime }}</p>
+                            <p class="card-text">Price: {{ flight.price }} zł</p>
 
                         </div>
                     </router-link>

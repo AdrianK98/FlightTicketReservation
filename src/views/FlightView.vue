@@ -13,8 +13,8 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" style="background-color: skyblue">No.{{flight.number}} </li>
-                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">To: {{flight.arrivalAirport}} </li>
-                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">From: {{flight.departureAirport}} </li>
+                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToDepartureLoc()">Departure: {{flight.departureAirport}} </li>
+                <li class="list-group-item" data-bs-toggle="collapse" data-bs-target="#departureMapCollapse" aria-expanded="false" aria-controls="departureMapCollapse" @click="changeToArrivalLoc()">Arrival: {{flight.arrivalAirport}} </li>
                 <li class="list-group-item">Duration: {{flight.flightLength}} Hours</li>
                 <li class="list-group-item"><router-link :to="{ name: 'Seats', params: { flightId: flightId }}"><h5>SEATS</h5></router-link></li>
 
