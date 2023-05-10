@@ -1,6 +1,21 @@
 <template>
   <h1>Choose your seat</h1><br><br>
   <div class="container">
+
+  <div class="row">
+    <div class="col">
+      1 of 3
+    </div>
+    <div class="col">
+      2 of 3
+    </div>
+    <div class="col">
+      3 of 3
+    </div>
+  </div>
+
+
+
       <div class="row justify-content-center">
           <h2>Front of the Plane</h2>
       </div>
@@ -129,6 +144,7 @@ export default {
         const userFlightQueryNum = this.flightId +'.number';
         const userFlightQueryArrival = this.flightId +'.arrive';
         const userFlightQueryDeparture = this.flightId +'.departure';
+        seatId = parseInt(seatId);
         await updateDoc(doc(db, 'userFlights', this.uid), {
             [userFlightQuerySeats]: arrayUnion(seatId),
             [userFlightQueryNum]: this.flightData.number,

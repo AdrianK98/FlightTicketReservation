@@ -8,8 +8,9 @@
                         <div class="card-body">
                             <h5 class="card-title">{{flight.number}}</h5>
                             <h5 class="card-title">From: {{flight.departure}}</h5>
-                            <h5 class="card-title">To:{{flight.arrive}}</h5>
-                            <p class="card-text">Seats: {{ flight.seats }}</p>
+                            <h5 class="card-title">To: {{flight.arrive}}</h5>
+                            <p class="card-text">Your reserved seats: </p>
+                            {{ flight.seats.join(', ')}}
 
 
                         </div>
