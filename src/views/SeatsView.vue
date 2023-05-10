@@ -4,19 +4,19 @@
 
   <div class="row">
     <div class="col">
-      1 of 3
+      <span class="badge bg-white w-auto px-5 py-3 m-2 text-dark">    Free     </span>
     </div>
     <div class="col">
-      2 of 3
+      <span class="badge bg-secondary w-auto p-3 m-2">Already Reserved</span>
     </div>
     <div class="col">
-      3 of 3
+      <span class="badge bg-danger w-auto p-3 m-2">Reserved by you</span>
     </div>
   </div>
 
 
 
-      <div class="row justify-content-center">
+      <div class="row justify-content-center mt-5">
           <h2>Front of the Plane</h2>
       </div>
       <div class="row justify-content-center">
