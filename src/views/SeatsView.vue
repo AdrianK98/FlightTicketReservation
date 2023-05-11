@@ -106,14 +106,13 @@ export default {
       };
   },
   async mounted() {
+    
+        //get current user
         const auth = getAuth();
         const user = auth.currentUser;
-            
-        if (!user) {
-        return 
-        } 
         this.uid = user.uid;
 
+          //read firebase data for given flight
       const flightId = this.$router.currentRoute._value.params.flightId
       this.flightRef = doc(db, "flights", flightId);
       this.flightSnap = await getDoc(this.flightRef);
@@ -127,10 +126,8 @@ export default {
   methods: {
       async reserveSeat(seatId) {
 
-
-
           //ADD FIREBASE SEATS STATUS CHANGE AND ADD USERID
-          const seatReservationChangeStatus = 'seats.'+ seatId +'.reserved';
+          const seatReservationChangeStatus = 'seats.'+ seatId +'.reserved'; 
           const seatReservationChangeUid = 'seats.'+ seatId +'.userId';
           this.seats[seatId].reserved = true;
           await updateDoc(this.flightRef, {
@@ -138,13 +135,19 @@ export default {
             [seatReservationChangeUid]:this.uid,
         },{ merge: true });
 
-        //ADD userFlight with uid, seats and flight
+        //create userflight document
         await setDoc(doc(db, 'userFlights', this.uid), {},{ merge: true });
+
+        //create commands to update userFlight in firebase
         const userFlightQuerySeats = this.flightId +'.seats';
         const userFlightQueryNum = this.flightId +'.number';
         const userFlightQueryArrival = this.flightId +'.arrive';
         const userFlightQueryDeparture = this.flightId +'.departure';
+
+        //change to seat data to integer
         seatId = parseInt(seatId);
+
+        //update userFlight document with uid, seats and flight
         await updateDoc(doc(db, 'userFlights', this.uid), {
             [userFlightQuerySeats]: arrayUnion(seatId),
             [userFlightQueryNum]: this.flightData.number,
@@ -152,9 +155,12 @@ export default {
             [userFlightQueryDeparture]: this.flightData.departureAirport,
  
         },{ merge: true });
+
+        //reset selected seat
         this.selectedSeatId = null;
       },
     
+
     showConfirmation(seatId,freeSpace) {
     this.freeReservation = freeSpace;
       this.selectedSeatId = seatId;
@@ -164,6 +170,7 @@ export default {
       this.showingConfirmation = false;
     },
 
+    //reserve seat or delete reservation after pressing confirm
     handleConfirmation() {
     if(!this.freeReservation){
         navigator.vibrate(200);
@@ -188,7 +195,6 @@ export default {
         this.seats[seatId].reserved = false;
           await updateDoc(this.flightRef, {
             [seatReservationChangeStatus] : {reserved:false},
-
         },{ merge: false });
 
 

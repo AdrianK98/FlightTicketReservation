@@ -35,6 +35,7 @@ export default {
         };
     },
     async mounted() {
+        //connect to database and read flights collection ans save to flights
         try {
             const flightsRef = collection(db, 'flights');
             const snapshot = await getDocs(flightsRef);
