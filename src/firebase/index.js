@@ -6,12 +6,12 @@ import { getFirestore } from 'firebase/firestore'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCaotohqe9mwOy0xKSUk6p6tGzOmi4uvn4",
-    authDomain: "flight-ticket-app-addaro.firebaseapp.com",
-    projectId: "flight-ticket-app-addaro",
-    storageBucket: "flight-ticket-app-addaro.appspot.com",
-    messagingSenderId: "94838896700",
-    appId: "1:94838896700:web:c7b3d496c3b7ce1687eb39"
+    apiKey: process.env.VUE_APP_FIREBASE_API,
+    authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.VUE_APP_FIREBASE_SENDER_ID,
+    appId: process.env.VUE_APP_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
