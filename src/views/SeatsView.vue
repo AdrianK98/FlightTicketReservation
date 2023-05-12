@@ -79,7 +79,7 @@
 <script>
 import { getAuth } from "firebase/auth";
 import { db } from '@/firebase';
-import { doc, getDoc, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion, setDoc, arrayRemove, deleteField } from "firebase/firestore";
 import ConfirmationWindow from '../components/ConfirmationView.vue'
 
 export default {
@@ -101,6 +101,7 @@ export default {
         seats: {},
         flightRef:'',
         flightData:{},
+        flightSeatCheck:[],
         uid:'',
         freeReservation:null,
       };
@@ -196,6 +197,29 @@ export default {
           await updateDoc(this.flightRef, {
             [seatReservationChangeStatus] : {reserved:false},
         },{ merge: false });
+
+        const userFlightQuerySeats = this.flightId +'.seats';
+        seatId = parseInt(seatId);
+
+        //update userflights
+        await updateDoc(doc(db, 'userFlights', this.uid), {
+            [userFlightQuerySeats]: arrayRemove(seatId),  
+        },{ merge: true });
+
+        const flightsRef2 = doc(db, "userFlights", this.uid);
+        const flightsSnap2 = await getDoc(flightsRef2);
+
+
+        this.flightSeatCheck = flightsSnap2.data()[this.flightId];
+
+        if(this.flightSeatCheck.seats.length ===0){
+          
+          await updateDoc(flightsRef2, {
+            [this.flightId]: deleteField()
+        });
+        console.log("SEATS DONT EXIST DELETING FIELD KEY")
+        }
+        
 
 
         console.log("Deleted seat "+seatId+" from reservation")
