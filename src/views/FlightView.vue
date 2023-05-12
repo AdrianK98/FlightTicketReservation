@@ -40,7 +40,7 @@
 
 <script>
 
-import VectorLayer from 'ol/layer/Vector'; // Added VectorLayer import
+import VectorLayer from 'ol/layer/Vector'; 
 import VectorSource from 'ol/source/Vector';
 import 'ol/ol.css';
 import Map from 'ol/Map';
@@ -85,45 +85,50 @@ export default {
     },
     async mounted() {
 
+        //read current position and save it to variable
         await navigator.geolocation.getCurrentPosition((position) => {
 
                 const curPosLat = position.coords.latitude;
                 const curPosLong = position.coords.longitude;
                 this.latLongCurrentPosition = fromLonLat([curPosLong, curPosLat]);
-
-
             });
 
         
-        //Get flightid from route
+        //Get flightid from route url
         const flightId = this.$router.currentRoute._value.params.flightId
 
-        //Load flight document
+        //Load flight document with given id
         const docRef = doc(db, "flights", flightId);
         const docSnap = await getDoc(docRef);
-
-        this.flight = docSnap.data();
+        
+        //check if data exists
         if (docSnap.exists()) {
+            this.flight = docSnap.data();
             console.log("Document data has beed read");
         } else {
             // docSnap.data() will be undefined in this case
             console.log("Failed to load")}
+
+
+
         //Read depature airport data
         const departureAirportRef = doc(db, "airports", this.flight.departureAirport);
         const departureAirportRefSnap = await getDoc(departureAirportRef);
+
         if (departureAirportRefSnap.exists()) {
-            console.log("Document data has beed read");
+            console.log("Airport data has beed read");
         } else {
             console.log("Failed to load airport data")}
         
         //load airports images
-
         try {
-      await this.loadImages(this.flight.arrivalAirport, this.flight.departureAirport);
 
-    } catch (error) {
-      console.log(error);
-    }
+    //load images from firebase and set it as background
+            await this.loadImages(this.flight.arrivalAirport, this.flight.departureAirport);
+
+        } catch (error) {
+            console.log(error);
+        }
 
 
         //Read arrival airport data
@@ -146,23 +151,29 @@ export default {
         this.arrivalLocationLong = arrivalAirportRefSnap.data().location._long;
 
     
-
+        //load OSM map
         await this.loadMap()
     },
     methods: {
     async loadImages(arr,dest){
+        //load arrive airport data
         const arrAirportRef = doc(db, "airports", arr);
         const arrAirportSnap = await getDoc(arrAirportRef);
         const arrAirportData = arrAirportSnap.data();
 
+        //load departure airport data
         const destAirportRef = doc(db, "airports", dest);
         const destAirportSnap = await getDoc(destAirportRef);
         const destAirportData = destAirportSnap.data();
 
+        //initialize firebase storage
         const storage = getStorage();
+
+        //get url for images from arrive airport by its name
         await getDownloadURL(ref(storage, arrAirportData.img))
         .then((url) => {
             
+            //set image as background
             const divElement = document.querySelector('.bg');
             this.imgUrlArr = url;
             divElement.style.backgroundImage = `url('${this.imgUrlArr}')`;
@@ -173,9 +184,11 @@ export default {
             console.log(error)
         });
 
+        //get url for images from destination airport by its name
         await getDownloadURL(ref(storage, destAirportData.img))
         .then((url) => {
             
+            //set image as background
             const divElement = document.querySelector('.wrapper');
             this.imgUrlDest = url;
             divElement.style.backgroundImage = `url('${this.imgUrlDest}')`;
@@ -190,6 +203,8 @@ export default {
 
         },
       async loadMap() {
+
+            //initialize map
             this.map = new Map({
             target: 'map',
             layers: [
@@ -203,19 +218,22 @@ export default {
             }),
             });
 
+            //create departure airport marker
             const departureMarker = new Feature({
             geometry: new Point(fromLonLat([this.departureLocationLong, this.departureLocationLat])),
         });
-
-
+        
+        //create current position marker
         const curMarker = new Feature({
             geometry: new Point(this.latLongCurrentPosition),
         });        
         
+        //create arrival airport position marker
         const arrivalMarker = new Feature({
             geometry: new Point(fromLonLat([this.arrivalLocationLong, this.arrivalLocationLat])),
         });
 
+        //create red marker style
         var iconStyleRed = new Style({
     image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
         anchor: [0.5, 46],
@@ -225,6 +243,8 @@ export default {
     }))
 })
 
+
+//create green marker style
 var iconStyleGreen = new Style({
     image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
         anchor: [0.5, 46],
@@ -234,7 +254,7 @@ var iconStyleGreen = new Style({
     }))
 })
 
-
+//load styles into markers
   departureMarker.setStyle(iconStyleRed);
   arrivalMarker.setStyle(iconStyleRed);
   curMarker.setStyle(iconStyleGreen);
@@ -251,10 +271,11 @@ var iconStyleGreen = new Style({
 
 
 
-
+        //add layers into map
         this.map.addLayer(vectorLayer);
         },
 
+        //set current location and view for departure airport
         changeToDepartureLoc(){
             this.currentLat=this.departureLocationLat;
             this.currentLong = this.departureLocationLong;
@@ -263,6 +284,7 @@ var iconStyleGreen = new Style({
             const newCenter = fromLonLat([this.mapLong, this.mapLat]);
             this.map.getView().setCenter(newCenter);
         },
+        //set current location and view for arrival airport
         changeToArrivalLoc(){
             this.currentLat=this.arrivalLocationLat;
             this.currentLong = this.arrivalLocationLong;
@@ -272,10 +294,14 @@ var iconStyleGreen = new Style({
             this.map.getView().setCenter(newCenter);
         
         },
+
+        //set map view for your current position
         changeToMyLoc(){
                 this.map.getView().setCenter(this.latLongCurrentPosition);
 
         },
+
+        //set map view for current opened airport map
         changeToCurrentLoc(){
             this.mapLat = this.currentLat;
             this.mapLong = this.currentLong;
