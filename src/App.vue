@@ -5,7 +5,7 @@
     <div id="nav" v-if="$store.state.user">
         <router-link to="/">Home</router-link> |
         <router-link to="/about">Scan QR code</router-link> |
-        <router-link to="/add_flight">Add Flight</router-link> |
+        <!-- <router-link to="/add_flight">Add Flight</router-link> | -->
         <router-link :to="{ name: 'Reserved', params: { userId: $store.state.userId }}">Your Flights</router-link> |
         <button type="button" class="btn btn-info" @click="$store.dispatch('logout')">Logout</button>
     </div>
