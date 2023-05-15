@@ -15,6 +15,9 @@ With SeatFly, users can be confident that their airline seat reservation is hass
 - AK-47
 - RG-42
 
+## Hosted App:
+https://adriank98.github.io/flight_seat_reservation/
+
 ## Example view of the application:
 ![Example view of the application](https://github.com/AdrianK98/flight_seat_reservation/blob/main/Example_view_of_the_application.jpg)
 
